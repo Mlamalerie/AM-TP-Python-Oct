@@ -4,32 +4,20 @@ from typing import List
 
 pokedex_file_path = 'Pokemon.csv'
 
-def parse_pokedex(file_path : str)-> List[dict]:
+def parse_pokedex(file_path : str) -> List[dict]:
     with open(file_path, 'r') as file:
         my_reader = csv.reader(file, delimiter=';')
         keys = next(my_reader)
-        results = []
-        for row in my_reader:
-            row_dict = {k:v for k,v in zip(keys,row)}
-            results.append(row_dict)
-
+        results = [dict(zip(keys,row)) for row in my_reader]
     return results
 
 pokemons_list = parse_pokedex(pokedex_file_path)
 print(f"Combien y'a t'il de Pokémon ref ? -> {len(pokemons_list)}")
 def count_type(pokemons : List[dict] , what_type : str):
-    count = 0
-    for pokemon in pokemons:
-        if pokemon["Type 1"] == what_type:
-            count += 1
-    return count
+    return sum(1 for pokemon in pokemons if pokemon["Type 1"] == what_type)
 
 def count_legendary(pokemons : List[dict]) -> int:
-    count = 0
-    for pokemon in pokemons:
-        if pokemon["Legendary"] == "True":
-            count += 1
-    return count
+    return sum(1 for pokemon in pokemons if pokemon["Legendary"] == "True")
 
 print(f"Combien de Pokémons sont de type Plante ? -> {count_type(pokemons_list,'Grass')}")
 print(f"Combien sont légendaires ? -> {count_legendary(pokemons_list)}")
@@ -74,7 +62,7 @@ def save_new_pokedex(pokemons : List[dict]) -> None:
     except:
         print("*error save*")
     else:
-        print("*saved at %s*" % (file_path))
+        print(f"*saved at {file_path}*")
 
 
 save_new_pokedex(pokemons_list)
